@@ -1,7 +1,6 @@
 import io.mockk.every
 import io.mockk.verify
 import org.assertj.core.api.KotlinAssertions.assertThat
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class ReceiptPrinterTest{
@@ -14,9 +13,10 @@ class ReceiptPrinterTest{
         val result = printer.print("")
 
         assertThat(result).isEqualTo("""
-            |Sales Taxes: 0
-            |Total: 0
-        """)
+            Sales Taxes: 0
+            Total: 0
+        """.trimIndent())
 
     }
+
 }
