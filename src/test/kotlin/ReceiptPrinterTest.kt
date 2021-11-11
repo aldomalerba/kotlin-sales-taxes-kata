@@ -1,14 +1,15 @@
 import io.mockk.every
-import io.mockk.verify
+import io.mockk.mockk
 import org.assertj.core.api.KotlinAssertions.assertThat
 import org.junit.jupiter.api.Test
 
 class ReceiptPrinterTest{
 
-    @Test
-    fun `print with empty string return Sales Taxes 0 And Total 0`() {
+    private val basketParser = mockk<BasketParser>()
+    private val printer = ReceiptPrinter(basketParser)
 
-        val printer = ReceiptPrinter()
+    @Test
+    fun `print an empty basket`() {
 
         val result = printer.print("")
 
@@ -19,4 +20,20 @@ class ReceiptPrinterTest{
 
     }
 
+
+    @Test
+    fun `print a basket with one item parsed correctly`() {
+
+        every { basketParser.parse(any()) } returns Basket(
+            listOf(BasketItem(1, "anyItem", 10.00))
+        )
+
+        val result = printer.print("anyItem")
+
+        assertThat(result).isEqualTo("""
+            1 anyItem: 10.00
+            Sales Taxes: 0
+            Total: 0
+        """.trimIndent())
+    }
 }
