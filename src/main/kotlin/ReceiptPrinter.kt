@@ -10,7 +10,7 @@ class ReceiptPrinter(private val basketParser: BasketParser, private val taxesCa
             "${it.item.quantity} ${it.item.name}: ${it.totalPrice().toTwoDecimals()}"
         }
 
-        val footer = "Sales Taxes: ${itemsTaxed.sumOf { it.taxes }.toTwoDecimals()}\nTotal: ${basket.totalPrice().toTwoDecimals()}"
+        val footer = "Sales Taxes: ${itemsTaxed.sumOf { it.taxes }.toTwoDecimals()}\nTotal: ${(basket.totalPrice() + itemsTaxed.sumOf { it.taxes }).toTwoDecimals()}"
 
         return listOf(items,footer).joinToString("\n").trimIndent()
 

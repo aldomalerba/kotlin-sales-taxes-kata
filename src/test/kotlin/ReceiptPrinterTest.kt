@@ -67,20 +67,20 @@ class ReceiptPrinterTest{
 
         every { basketParser.parse(any()) } returns Basket(
             listOf(
-                BasketItem(1, "anyItem 1", 1.00,),
+                BasketItem(2, "anyItem 1", 1.00,),
                 BasketItem(1, "anyItem 2", 2.00,)
             )
         )
 
-        every { taxesCalculator.taxes(any()) } returns 1.50 andThen 1.00
+        every { taxesCalculator.taxes(any()) } returns 3.00 andThen 1.00
 
         val result = printer.print("anyBasket")
 
         assertThat(result).isEqualTo("""
-            1 anyItem 1: 2.50
+            2 anyItem 1: 5.00
             1 anyItem 2: 3.00
-            Sales Taxes: 2.50
-            Total: 3.00
+            Sales Taxes: 4.00
+            Total: 8.00
         """.trimIndent())
     }
 
