@@ -2,6 +2,7 @@ package e2e
 
 import BasketStringParser
 import ReceiptPrinter
+import SalesTxesCalculator
 import org.assertj.core.api.KotlinAssertions.assertThat
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -12,7 +13,7 @@ class PrintReceiptAcceptanceTest {
     @Test
     fun `Input 1`() {
 
-        val printer = ReceiptPrinter(BasketStringParser())
+        val printer = ReceiptPrinter(BasketStringParser(), SalesTxesCalculator())
 
         val result = printer.print(
                   """2 book at 12.49

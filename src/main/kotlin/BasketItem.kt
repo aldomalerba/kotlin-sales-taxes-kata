@@ -1,5 +1,5 @@
-class BasketItem(val quantity: Int, val name: String, val price: Double, val tax: Double) {
+class BasketItem(val quantity: Int, val name: String, val price: Double) {
 
-    fun taxedPrice(): Double = (price + tax) * quantity
+    fun totalPrice() : Double = quantity * price
 
 }
