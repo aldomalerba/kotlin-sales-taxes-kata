@@ -4,6 +4,7 @@ class ReceiptPrinter(private val basketParser: BasketParser) {
 
         val basket = basketParser.parse(basketString)
 
+
         val items = basket.items.joinToString("\n") {
             "${it.quantity} ${it.name}: ${it.taxedPrice().toTwoDecimals()}"
         }

@@ -9,7 +9,7 @@ class ReceiptPrinterTest{
     private val printer = ReceiptPrinter(basketParser)
 
     @Test
-    fun `print an empty receipt`() {
+    fun `print an empty basket`() {
 
         val result = printer.print("")
 
@@ -20,14 +20,15 @@ class ReceiptPrinterTest{
 
     }
 
+
     @Test
-    fun `print a receipt with one item`() {
+    fun `print a basket with one item parsed correctly`() {
 
         every { basketParser.parse(any()) } returns Basket(
             listOf(BasketItem(1, "anyItem", 10.00, 0.00))
         )
 
-        val result = printer.print("anyBasketWithOneItems")
+        val result = printer.print("anyItem")
 
         assertThat(result).isEqualTo("""
             1 anyItem: 10.00
@@ -37,7 +38,7 @@ class ReceiptPrinterTest{
     }
 
     @Test
-    fun `print a receipt with more than one item`() {
+    fun `print a basket with more than one item`() {
 
         every { basketParser.parse(any()) } returns Basket(
             listOf(
@@ -56,6 +57,7 @@ class ReceiptPrinterTest{
             Total: 3.00
         """.trimIndent())
     }
+
 
     @Test
     fun `print apply sales taxes to BasketItems`() {
