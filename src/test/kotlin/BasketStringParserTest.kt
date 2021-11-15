@@ -8,10 +8,14 @@ class BasketStringParserTest {
 
         val parser = BasketStringParser()
 
-        val result = parser.parse("1 anyItem at 10.00\n1 anyItem at 5.00")
+        val result = parser.parse("1 anyItem 1 at 1.00\n2 anyItem 2 at 5.00")
 
-        assertThat(result.items).contains(BasketItem(1, "anyItem", 10.00))
-        assertThat(result.items).contains(BasketItem(1, "anyItem", 5.00))
+        assertThat(result.items.first().quantity).isEqualTo(1)
+        assertThat(result.items.first().name).isEqualTo("anyItem 1")
+        assertThat(result.items.first().price).isEqualTo(1.00)
+        assertThat(result.items.last().quantity).isEqualTo(2)
+        assertThat(result.items.last().name).isEqualTo("anyItem 2")
+        assertThat(result.items.last().price).isEqualTo(5.00)
     }
 
 }
