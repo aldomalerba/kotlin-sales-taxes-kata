@@ -5,9 +5,8 @@ import org.junit.jupiter.api.Test
 
 class ReceiptPrinterTest{
 
-    private val taxesCalculator = mockk<TaxesCalculator>();
     private val basketParser = mockk<BasketParser>(relaxed = true)
-    private val printer = ReceiptPrinter(basketParser, taxesCalculator)
+    private val printer = ReceiptPrinter(basketParser)
 
     @Test
     fun `print an empty receipt`() {
@@ -25,7 +24,7 @@ class ReceiptPrinterTest{
     fun `print a receipt with one item`() {
 
         every { basketParser.parse(any()) } returns Basket(
-            listOf(BasketItem(1, "anyItem", 10.00))
+            listOf(BasketItem(1, "anyItem", 10.00, 0.00))
         )
 
         val result = printer.print("anyBasketWithOneItems")
@@ -42,10 +41,11 @@ class ReceiptPrinterTest{
 
         every { basketParser.parse(any()) } returns Basket(
             listOf(
-                BasketItem(1, "anyItem 1", 1.00),
-                BasketItem(1, "anyItem 2", 2.00)
+                BasketItem(1, "anyItem 1", 1.00, 0.00),
+                BasketItem(1, "anyItem 2", 2.00, 0.00)
             )
         )
+
 
         val result = printer.print("anyBasketWithTwoItems")
 
@@ -62,14 +62,10 @@ class ReceiptPrinterTest{
 
         every { basketParser.parse(any()) } returns Basket(
             listOf(
-                BasketItem(1, "anyItem 1", 1.00),
-                BasketItem(1, "anyItem 2", 2.00)
+                BasketItem(1, "anyItem 1", 1.00, 1.50),
+                BasketItem(1, "anyItem 2", 2.00, 1.00)
             )
         )
-
-        every { taxesCalculator.from(any()) } returns
-                BasketItemTaxed(BasketItem(1, "anyItem 1", 1.00), 1.50) andThen
-                BasketItemTaxed(BasketItem(1, "anyItem 2", 2.00), 1.00)
 
         val result = printer.print("anyBasket")
 
