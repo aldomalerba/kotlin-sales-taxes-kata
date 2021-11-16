@@ -7,13 +7,17 @@ class ReceiptPrinter(private val basketParser: BasketParser, private val taxesCa
         val itemsTaxed = basket.items.map { BasketItemTaxed(it,taxesCalculator.taxes(it)) }
 
         val items = itemsTaxed.joinToString("\n") {
-            "${it.item.quantity} ${it.item.name}: ${it.totalPrice().toTwoDecimals()}"
+            "${it.item.quantity}${imported(it.item)}${it.item.name}: ${it.totalPrice().toTwoDecimals()}"
         }
 
         val footer = "Sales Taxes: ${itemsTaxed.sumOf { it.taxes }.toTwoDecimals()}\nTotal: ${(basket.totalPrice() + itemsTaxed.sumOf { it.taxes }).toTwoDecimals()}"
 
         return listOf(items,footer).joinToString("\n").trimIndent()
 
+    }
+
+    private fun imported(item: BasketItem): String {
+        return if (item.imported) " imported " else " ";
     }
 
     private fun Double.toTwoDecimals(): String = String.format("%.2f", this)

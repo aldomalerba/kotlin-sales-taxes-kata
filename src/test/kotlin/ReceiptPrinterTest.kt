@@ -25,7 +25,7 @@ class ReceiptPrinterTest{
     fun `print a receipt with one item`() {
 
         every { basketParser.parse(any()) } returns Basket(
-            listOf(BasketItem(1, "anyItem", 10.00))
+            listOf(BasketItem(1, "anyItem", 10.00, false))
         )
 
         every { taxesCalculator.taxes(any()) } returns 0.00
@@ -44,8 +44,8 @@ class ReceiptPrinterTest{
 
         every { basketParser.parse(any()) } returns Basket(
             listOf(
-                BasketItem(1, "anyItem 1", 1.00),
-                BasketItem(1, "anyItem 2", 2.00)
+                BasketItem(1, "anyItem 1", 1.00, false),
+                BasketItem(1, "anyItem 2", 2.00, false)
             )
         )
 
@@ -67,8 +67,8 @@ class ReceiptPrinterTest{
 
         every { basketParser.parse(any()) } returns Basket(
             listOf(
-                BasketItem(2, "anyItem 1", 1.00,),
-                BasketItem(1, "anyItem 2", 2.00,)
+                BasketItem(2, "anyItem 1", 1.00, false),
+                BasketItem(1, "anyItem 2", 2.00, false)
             )
         )
 
@@ -84,4 +84,23 @@ class ReceiptPrinterTest{
         """.trimIndent())
     }
 
+    @Test
+    fun `print imported BasketItems`() {
+
+        every { basketParser.parse(any()) } returns Basket(
+            listOf(
+                BasketItem(1, "anyItem 1", 1.00, true)
+            )
+        )
+
+        every { taxesCalculator.taxes(any()) } returns 0.00
+
+        val result = printer.print("anyBasket")
+
+        assertThat(result).isEqualTo("""
+            1 imported anyItem 1: 1.00
+            Sales Taxes: 0.00
+            Total: 1.00
+        """.trimIndent())
+    }
 }
