@@ -1,20 +1,18 @@
-import java.lang.Math.round
-import kotlin.math.roundToInt
-
+import kotlin.math.ceil
 class SalesTaxesCalculator : TaxesCalculator {
+
     override fun taxes(basketItem: BasketItem): Double {
-        val baseTax = basesSalesTax(basketItem)
-        val importedTax = if(basketItem.imported) basketItem.totalPrice() * 0.05 else 0.00
-        return (baseTax + importedTax).round()
+        return (basesSalesTax(basketItem) + importedTax(basketItem)) * basketItem.quantity
     }
 
-    private fun basesSalesTax(basketItem: BasketItem) : Double {
-        return if(isExcept(basketItem)) 0.00
-        else basketItem.totalPrice() * 0.1
-    }
+    private fun importedTax(basketItem: BasketItem) = if (basketItem.imported) { (basketItem.price * 0.05).round() } else 0.00
 
-    private fun Double.round() : Double = (this * 20.0).roundToInt() / 20.0;
+    private fun basesSalesTax(basketItem: BasketItem) = if (isExcept(basketItem)) 0.00 else (basketItem.price * 0.1).round()
 
-    private fun isExcept(basketItem: BasketItem) = basketItem.name == "book" || basketItem.name.contains("chocolate")
+    private fun Double.round() = ceil(this * 20.0) / 20.0;
+
+    private fun isExcept(basketItem: BasketItem) =
+        basketItem.name == "book" || basketItem.name.contains("chocolate") || basketItem.name.contains("pills")
+
 
 }

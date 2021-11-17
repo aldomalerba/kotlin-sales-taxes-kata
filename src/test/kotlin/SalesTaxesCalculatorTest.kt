@@ -26,8 +26,15 @@ class SalesTaxesCalculatorTest {
     }
 
     @Test
+    fun `calculate base tax except medical products`() {
+        val result = calculator.taxes(BasketItem(2, "pills", 10.00, false))
+        assertThat(result).isEqualTo(0.00)
+    }
+
+    @Test
     fun `calculate additional imported tax`() {
-        val result = calculator.taxes(BasketItem(1, "anyItem", 47.50, true))
-        assertThat(47.50 + result).isEqualTo(54.65)
+        val basketItem = BasketItem(3, "imported box of chocolates", 11.25, true)
+        val result = calculator.taxes(basketItem)
+        assertThat(basketItem.totalPrice() + result).isEqualTo(35.55)
     }
 }
