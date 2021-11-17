@@ -2,20 +2,21 @@ package e2e
 
 import BasketStringParser
 import ReceiptPrinter
+import ReceiptService
 import SalesTaxesCalculator
 import org.assertj.core.api.KotlinAssertions.assertThat
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 
 class PrintReceiptAcceptanceTest {
 
+    private val receiptService = ReceiptService(BasketStringParser(), SalesTaxesCalculator(), ReceiptPrinter())
+
+
     @Test
     fun `Input 1`() {
 
-        val printer = ReceiptPrinter(BasketStringParser(), SalesTaxesCalculator())
-
-        val result = printer.print("""
+        val result = receiptService.print("""
             2 book at 12.49
             1 music CD at 14.99
             1 chocolate bar at 0.85""".trimIndent()
@@ -33,9 +34,8 @@ class PrintReceiptAcceptanceTest {
     @Test
     fun `Input 2`() {
 
-        val printer = ReceiptPrinter(BasketStringParser(), SalesTaxesCalculator())
 
-        val result = printer.print("""
+        val result = receiptService.print("""
             1 imported box of chocolates at 10.00
             1 imported bottle of perfume at 47.50""".trimIndent()
         )
@@ -51,9 +51,7 @@ class PrintReceiptAcceptanceTest {
     @Test
     fun `Input 3`() {
 
-        val printer = ReceiptPrinter(BasketStringParser(), SalesTaxesCalculator())
-
-        val result = printer.print("""
+        val result = receiptService.print("""
             1 imported bottle of perfume at 27.99
             1 bottle of perfume at 18.99
             1 packet of headache pills at 9.75

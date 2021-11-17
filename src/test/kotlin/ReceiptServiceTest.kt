@@ -1,36 +1,25 @@
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.KotlinAssertions.assertThat
 import org.junit.jupiter.api.Test
 
-class ReceiptPrinterTest{
+class ReceiptServiceTest{
 
     private val taxesCalculator = mockk<TaxesCalculator>(relaxed = true)
     private val basketParser = mockk<BasketParser>(relaxed = true)
-    private val printer = ReceiptPrinter(basketParser, taxesCalculator)
-
-    @Test
-    fun `print an empty receipt`() {
-
-        val result = printer.print("")
-
-        assertThat(result).isEqualTo("""
-            Sales Taxes: 0.00
-            Total: 0.00
-        """.trimIndent())
-
-    }
+    private val service = ReceiptService(basketParser, taxesCalculator, ReceiptPrinter())
 
     @Test
     fun `print a receipt with one item`() {
 
-        every { basketParser.parse(any()) } returns Basket(
-            listOf(BasketItem(1, "anyItem", 10.00, false))
-        )
+        val anyBasketItem = BasketItem(1, "anyItem", 10.00, false)
+
+        every { basketParser.parse(any()) } returns Basket(listOf(anyBasketItem))
 
         every { taxesCalculator.taxes(any()) } returns 0.00
 
-        val result = printer.print("anyBasketWithOneItems")
+        val result = service.print("anyBasketWithOneItems")
 
         assertThat(result).isEqualTo("""
             1 anyItem: 10.00
@@ -52,7 +41,7 @@ class ReceiptPrinterTest{
         every { taxesCalculator.taxes(any()) } returns 0.00 andThen 0.00
 
 
-        val result = printer.print("anyBasketWithTwoItems")
+        val result = service.print("anyBasketWithTwoItems")
 
         assertThat(result).isEqualTo("""
             1 anyItem 1: 1.00
@@ -74,7 +63,7 @@ class ReceiptPrinterTest{
 
         every { taxesCalculator.taxes(any()) } returns 3.00 andThen 1.00
 
-        val result = printer.print("anyBasket")
+        val result = service.print("anyBasket")
 
         assertThat(result).isEqualTo("""
             2 anyItem 1: 5.00
@@ -95,7 +84,7 @@ class ReceiptPrinterTest{
 
         every { taxesCalculator.taxes(any()) } returns 0.00
 
-        val result = printer.print("anyBasket")
+        val result = service.print("anyBasket")
 
         assertThat(result).isEqualTo("""
             1 imported anyItem 1: 1.00

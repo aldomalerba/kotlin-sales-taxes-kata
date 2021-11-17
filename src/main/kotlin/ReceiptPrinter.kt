@@ -1,18 +1,18 @@
-class ReceiptPrinter(private val basketParser: BasketParser, private val taxesCalculator: TaxesCalculator) {
+class ReceiptPrinter : Printer {
 
-    fun print(basketString: String): String {
-
-        val basket = basketParser.parse(basketString)
-
-        val itemsTaxed = basket.items.map { BasketItemTaxed(it,taxesCalculator.taxes(it)) }
+    override fun print(itemsTaxed: List<BasketItemTaxed>): String {
 
         val items = itemsTaxed.joinToString("\n") {
             "${it.item.quantity}${imported(it.item)}${it.item.name}: ${it.totalPrice().toTwoDecimals()}"
         }
 
-        val footer = "Sales Taxes: ${itemsTaxed.sumOf { it.taxes }.toTwoDecimals()}\nTotal: ${(basket.totalPrice() + itemsTaxed.sumOf { it.taxes }).toTwoDecimals()}"
+        val salesTaxes = itemsTaxed.sumOf { it.taxes }
+        val total = itemsTaxed.sumOf { it.totalPrice() }
 
-        return listOf(items,footer).joinToString("\n").trimIndent()
+        val footer =
+            "Sales Taxes: ${salesTaxes.toTwoDecimals()}\nTotal: ${total.toTwoDecimals()}"
+
+        return listOf(items, footer).joinToString("\n")
 
     }
 
